@@ -1,0 +1,107 @@
+INSTRUCTIONS : 
+
+________________________________________________________________________________________________________________________________________________________________________________________
+EC2----
+
+Launch EC2 instance (free tier)
+
+Download key-pair.pem file and store it in project directory
+
+open terminal in same directory and run ssh command to open EC2 to local terminal
+similar to => ssh -i "EC2keypair.pem" ec2-user@ec2-13-xyz-98-59.ap-south-1.compute.amazonaws.com
+
+If PERMISSION ERROR occurs, then use chmod 400 <key-pair-name>
+
+
+
+Open the Amazon EC2 console at https://console.aws.amazon.com/ec2/.
+
+In the table of instances choose <instance_name>.
+
+Near the top of the screen, choose Connect, then follow the instructions to connect to the instance.
+
+Install Java on the client instance by running the following command:
+sudo yum install java-1.8.0
+
+Run the following command to download Apache Kafka.
+wget https://archive.apache.org/dist/kafka/2.2.1/kafka_2.12-2.2.1.tgz
+
+tar -xvf kafka_2.12-2.2.1.tgz
+
+Java 
+sudo yum install java-1.8.0
+
+Go to extracted kafka directory and run 
+bin/zookeeper-server-start.sh config/zookeeper.properties
+
+
+New window terminal connect EC2 for Kafka Server
+
+allocate memory to kafka server 
+export KAFKA_HEAP_OPTS="-Xmx256M -Xms128M"
+
+move to kafka directory
+bin/kafka-server-start.sh config/server.properties
+
+It is pointing to private server , change server.properties so that it can run in public IP 
+to change -
+
+shutdown zookeeper and kafka server 
+Ctrl C 
+
+
+sudo nano config/server.properties
+Replace advertised listeners => your hostname with the public ip address of the EC2 machine
+
+
+Restart zookeeper and kafka server
+
+
+Change security inbound rules for EC2 machine to All Traffic on AWS 
+
+
+CREATE TOPIC - 
+open third terminal and connect to EC2 (ssh)
+Go to kafka directory & run
+bin/kafka-topics.sh --create --topic demo1 --bootstrap-server <Put the Public IP of your EC2 Instance:9092> --replication-factor 1 --partitions 1
+
+
+START PRODUCER - 
+directory> 
+bin/kafka-console-producer.sh --topic demo1 --bootstrap-server <public_ip>:9092 
+
+if says not recognized, use 
+bin/kafka-console-producer.sh --topic demo1 --broker-list  localhost:9092
+
+
+START CONSUMER - 
+directory> 
+bin/kafka-console-consumer.sh --topic demo1 --bootstrap-server {Put the Public IP of your EC2 Instance:9092}
+
+________________________________________________________________________________________________________________________________________________________________________________________
+
+
+We can use Python Client Producer and Consumers to access the data from python file.
+
+Run the KafkaProducer script to simulate transaction requests to a topic.
+
+Run the app.py which has KafkaConsumer object which will get json dicts instantly getting passed into ML model and pass the values into HTML doc for rendering a webpage generating outcome.
+
+________________________________________________________________________________________________________________________________________________________________________________________
+
+ABSTRACT ->
+I have made a project on Real Time Fraud Detection in big data using Kafka Streaming service.
+The project starts with a Kafka producer client in python looping to send data on a topic, which helps in simulating an environment that feels like various transaction requests are coming.
+There is another Kafka Consumer client in python which consumers data from the topic and passes it to the flask app. 
+The flask app has an ML model included in it and all the parameters are passed onto the html template being rendered. 
+The website shows whether the transaction request is fraud or not.
+
+
+SIGNIFICANCE -> 
+Real-time fraud detection is a common use case for streaming data processing, and Kafka is a popular choice for building such applications.
+
+Your project architecture using a Kafka producer and consumer, along with a Flask app that includes an ML model for fraud detection, is a good example of how to build a real-time streaming application using Kafka. By sending data from the producer to the consumer via Kafka, you are able to process and analyze the data in real-time, which is critical for detecting fraud as quickly as possible.
+
+The Flask app with the ML model is a great way to analyze the data in real-time and make decisions about whether a transaction is fraudulent or not. By passing the parameters to the HTML template, you are able to display the results in a user-friendly way, which is important for making the application accessible to end-users.
+
+Overall, your project demonstrates the power of using Kafka for real-time streaming data processing and the importance of using ML models for fraud detection. Well done!
