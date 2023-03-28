@@ -12,7 +12,7 @@ similar to => ssh -i "EC2keypair.pem" ec2-user@ec2-13-xyz-98-59.ap-south-1.compu
 
 If PERMISSION ERROR occurs, then use chmod 400 <key-pair-name>
 
-
+Open security inbound to all traffic on EC2 console
 
 Open the Amazon EC2 console at https://console.aws.amazon.com/ec2/.
 
