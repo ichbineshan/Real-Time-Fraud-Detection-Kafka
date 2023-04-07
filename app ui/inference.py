@@ -2,7 +2,10 @@ import pandas as pd
 from datetime import datetime
 import numpy as np
 from joblib import load
-model=load('/home/eshan/Documents/FRAUD DETECTION PROJECT/this_is_a_model.pkl')
+import os
+
+filepath = os.path.join(os.getcwd(),'this_is_a_model.pkl')
+model=load(filepath)
 def get_age_group(row):
     ans=[0,0,0,0,0,0,0,0,0]
     rows=row

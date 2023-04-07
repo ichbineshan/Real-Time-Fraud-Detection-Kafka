@@ -7,10 +7,11 @@ from kafka import KafkaConsumer
 from time import sleep
 from json import dumps,loads
 import json
+import time 
 
 consumer= KafkaConsumer(
     'demo2',
-    bootstrap_servers=['43.204.143.162:9092'],
+    bootstrap_servers=['13.233.251.226:9092'],
     value_deserializer= lambda x: loads(x.decode('utf-8'))
     )
 
@@ -23,6 +24,7 @@ def index():
 @app.route('/predict',methods=['GET'])
 def predict_fraud():
     for c in consumer:
+        # a= time.time()
         data=c.value
         val = data['merchant']
         val = val.replace('fraud_','')
@@ -30,6 +32,8 @@ def predict_fraud():
         result = get_prediction(data)
         if result==0 and random.random()>0.90:
             result=1
+        # print(a,'--',b,'--','ehsan paande')    
+        # b= a
         return render_template('index.html', 
                             result=result,
                             trans_date_trans_time=data['trans_date_trans_time'],
@@ -57,6 +61,7 @@ def predict_fraud():
 
 
 if __name__=='__main__':
+    # a,b=0,0
     app.run(debug=True)
 
 
